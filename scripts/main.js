@@ -1,3 +1,5 @@
+const numberOfMosquitoClasses = 3
+
 function gameStart() {
     console.log('Inicializando o jogo')
     defineInicialbrowserWindowSize()
@@ -30,11 +32,25 @@ function defineMosquitoPosition(mosquito) {
     console.log('Posição definida=' + positionX + ',' + positionY)
 }
 
+function getMosquitoRandomClassName() {
+    var classNumber = Math.floor(Math.random() * numberOfMosquitoClasses)
+    console.log('The class number is '+ classNumber)
+    switch(classNumber) {
+        case 0:
+            return 'mosquito1'
+        case 1:
+            return 'mosquito2'
+        case 2:
+            return 'mosquito3'
+    }
+}
+
 function newMosquito() {
     console.log('Criando novo mosquito')
     var newMosquito = document.createElement('img')
     newMosquito.src = 'img/mosquito.png'
-    newMosquito.className = 'mosquito1'
+    newMosquito.className = getMosquitoRandomClassName()
+    console.log('Mosquito class name is ' + newMosquito.className)
     defineMosquitoPosition(newMosquito)
     document.body.appendChild(newMosquito)
     console.log('Mosquito criado')
