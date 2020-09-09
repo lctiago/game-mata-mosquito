@@ -17,3 +17,11 @@
     width: 90px;
     height: 90px;
 }
+
+.leftSide {
+    transform: scaleX(1);
+}
+
+.rightSide {
+    transform: scaleX(-1);
+}

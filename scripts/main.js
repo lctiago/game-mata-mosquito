@@ -1,9 +1,18 @@
 const numberOfMosquitoClasses = 3
+const maximumMosquitoWidth = 90
+const maximumMosquitoHeight = 90
+const mosquitoTimeSpawnInMilliseconds = 1000
 
 function gameStart() {
     console.log('Inicializando o jogo')
     defineInicialbrowserWindowSize()
+    setInterval(update, mosquitoTimeSpawnInMilliseconds)
     console.log('Inicialização completa')
+}
+
+function update() {
+    destroyAliveMosquito()
+    newMosquito()
 }
 
 function defineInicialbrowserWindowSize() {
@@ -22,8 +31,8 @@ function updateBrowserWindowSize() {
 
 function defineMosquitoPosition(mosquito) {
     console.log('Definindo posição aleatória para o novo mosquito')
-    var positionX = Math.floor(Math.random() * browserWindowWidthInPixels) - 50
-    var positionY = Math.floor(Math.random() * browserWindowHeightInPixels) - 50
+    var positionX = Math.floor(Math.random() * browserWindowWidthInPixels) - maximumMosquitoWidth
+    var positionY = Math.floor(Math.random() * browserWindowHeightInPixels) - maximumMosquitoHeight
     positionX = positionX < 0 ? 0 : positionX
     positionY = positionY < 0 ? 0 : positionY
     mosquito.style.left = positionX + 'px'
@@ -45,17 +54,44 @@ function getMosquitoRandomClassName() {
     }
 }
 
+function getMosquitoRandomSideClassName() {
+    var sideNumber = Math.floor(Math.random() * 2)
+    console.log('The side number is '+ sideNumber)
+    switch(sideNumber) {
+        case 0:
+            return 'leftSide'
+        case 1:
+            return 'rightSide'
+    }
+}
+
+function attAliveMosquito(newMosquito) {
+    console.log('Atualizando mosquito vivo...')
+    aliveMosquito = newMosquito
+    console.log('Novo mosquito vivo definido')
+}
+
+function destroyAliveMosquito() {
+    console.log('Destruindo mosquito vivo...')
+    if (aliveMosquito)
+        aliveMosquito.remove()
+    console.log('Mosquito destruído')
+}
+
 function newMosquito() {
     console.log('Criando novo mosquito')
     var newMosquito = document.createElement('img')
     newMosquito.src = 'img/mosquito.png'
-    newMosquito.className = getMosquitoRandomClassName()
+    newMosquito.className = getMosquitoRandomClassName() + ' ' + getMosquitoRandomSideClassName()
     console.log('Mosquito class name is ' + newMosquito.className)
+    newMosquito.id = 'mosquito'
     defineMosquitoPosition(newMosquito)
     document.body.appendChild(newMosquito)
+    attAliveMosquito(newMosquito)
     console.log('Mosquito criado')
 }
 
 var browserWindowWidthInPixels = 0
 var browserWindowHeightInPixels = 0
+var aliveMosquito = null
 gameStart()
