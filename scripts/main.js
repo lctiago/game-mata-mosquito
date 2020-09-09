@@ -1,7 +1,9 @@
 const numberOfMosquitoClasses = 3
 const maximumMosquitoWidth = 90
 const maximumMosquitoHeight = 90
-const mosquitoTimeSpawnInMilliseconds = 1000
+const mosquitoTimeSpawnInMilliseconds = 2000
+const totalOfHeartPoints = 3
+var heartPointsLeft = 3
 
 function gameStart() {
     console.log('Inicializando o jogo')
@@ -11,8 +13,15 @@ function gameStart() {
 }
 
 function update() {
-    destroyAliveMosquito()
+    updateHeartPoints()
+    verifyGameStatus()
     newMosquito()
+}
+
+function verifyGameStatus() {
+    if (heartPointsLeft == 0) {
+        alert('Game over')
+    }
 }
 
 function defineInicialbrowserWindowSize() {
@@ -71,11 +80,43 @@ function attAliveMosquito(newMosquito) {
     console.log('Novo mosquito vivo definido')
 }
 
+function updateHeartPoints() {
+    if (isMosquitoAlive()) {
+        console.log('Atualizando variáveis relacionadas aos pontos de vida')
+        destroyAliveMosquito()
+        loseHeartPoint()
+        decrementTotalOfHeartPoints()
+    } else {
+        console.log('Nenhum mosquito vivo, atualização desnecessária')
+    }
+}
+
+function loseHeartPoint() {
+    console.log('Atualizando as vidas do jogador...')
+    var heartPointNumberToBeLost = totalOfHeartPoints + 1 - heartPointsLeft
+    console.log('O jogador deverá perder o coração de número ' + heartPointNumberToBeLost)
+    var heartPointID = 'heart-point-' + heartPointNumberToBeLost
+    console.log('ID do coração= ' + heartPointID)
+    var heartPointToBeLost = document.getElementById(heartPointID)
+    heartPointToBeLost.src = 'img/coracao_vazio.png'
+    console.log('Atualização concluída')
+}
+
+function decrementTotalOfHeartPoints() {
+    console.log('Atualizando número de vidas restantes')
+    --heartPointsLeft;
+}
+
 function destroyAliveMosquito() {
-    console.log('Destruindo mosquito vivo...')
-    if (aliveMosquito)
+    if (aliveMosquito) {
+        console.log('Destruindo mosquito vivo...')
         aliveMosquito.remove()
-    console.log('Mosquito destruído')
+        console.log('Mosquito destruído')
+    }
+}
+
+function isMosquitoAlive() {
+    return aliveMosquito != null
 }
 
 function newMosquito() {
@@ -85,6 +126,10 @@ function newMosquito() {
     newMosquito.className = getMosquitoRandomClassName() + ' ' + getMosquitoRandomSideClassName()
     console.log('Mosquito class name is ' + newMosquito.className)
     newMosquito.id = 'mosquito'
+    newMosquito.onclick = function() {
+       this.remove()
+       aliveMosquito = null
+    }
     defineMosquitoPosition(newMosquito)
     document.body.appendChild(newMosquito)
     attAliveMosquito(newMosquito)
