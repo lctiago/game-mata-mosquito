@@ -20,7 +20,7 @@ function update() {
 
 function verifyGameStatus() {
     if (heartPointsLeft == 0) {
-        alert('Game over')
+        window.location.href = "game-over.html"
     }
 }
 
