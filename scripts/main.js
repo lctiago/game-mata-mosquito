@@ -4,24 +4,61 @@ const maximumMosquitoHeight = 90
 const mosquitoTimeSpawnInMilliseconds = 2000
 const totalOfHeartPoints = 3
 var heartPointsLeft = 3
+const timeLimitInSeconds = 8
+var timeLeftInSeconds = timeLimitInSeconds
+var updateIntervalID = null
+var browserWindowWidthInPixels = 0
+var browserWindowHeightInPixels = 0
+var aliveMosquito = null
 
 function gameStart() {
     console.log('Inicializando o jogo')
     defineInicialbrowserWindowSize()
-    setInterval(update, mosquitoTimeSpawnInMilliseconds)
+    initializeTimer()
+    updateIntervalID = setInterval(update, mosquitoTimeSpawnInMilliseconds)
+    newMosquito()
     console.log('Inicialização completa')
 }
 
 function update() {
     updateHeartPoints()
-    verifyGameStatus()
+    updateTimer()
     newMosquito()
+    verifyGameStatus()
+}
+
+function stop() {
+    clearInterval(updateIntervalID)
 }
 
 function verifyGameStatus() {
+    console.log('Verificando status do jogo...')
     if (heartPointsLeft == 0) {
+        console.log('Game over')
+        stop()
         window.location.href = "game-over.html"
     }
+    else if (timeLeftInSeconds == 0) {
+        console.log('Vitória!')
+        stop()
+    } else {
+        console.log('O jogo continua...')
+    }
+}
+
+function updateTimer() {
+    const timer = document.getElementById('timer')
+    const mosquitoTimeSpawnInSeconds = mosquitoTimeSpawnInMilliseconds / 1000
+    timeLeftInSeconds -= mosquitoTimeSpawnInSeconds
+    timer.innerHTML = timeLeftInSeconds
+    console.log('Tempo restante atualizado para ' + timeLeftInSeconds + ' segundos')
+}
+
+function initializeTimer() {
+    console.log('Inicializando o cronômetro...')
+    const timer = document.getElementById('timer')
+    timer.innerHTML = timeLimitInSeconds
+    console.log('Cronômetro inicializado')
 }
 
 function defineInicialbrowserWindowSize() {
@@ -136,7 +173,4 @@ function newMosquito() {
     console.log('Mosquito criado')
 }
 
-var browserWindowWidthInPixels = 0
-var browserWindowHeightInPixels = 0
-var aliveMosquito = null
 gameStart()
