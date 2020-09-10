@@ -41,6 +41,7 @@ function verifyGameStatus() {
     else if (timeLeftInSeconds == 0) {
         console.log('Vitória!')
         stop()
+        window.location.href = "vitoria.html"
     } else {
         console.log('O jogo continua...')
     }
