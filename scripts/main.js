@@ -1,34 +1,39 @@
 const numberOfMosquitoClasses = 3
 const maximumMosquitoWidth = 90
 const maximumMosquitoHeight = 90
-const mosquitoTimeSpawnInMilliseconds = 2000
+var mosquitoTimeSpawnInMilliseconds = null
 const totalOfHeartPoints = 3
 var heartPointsLeft = 3
-const timeLimitInSeconds = 8
+const timeLimitInSeconds = 15
 var timeLeftInSeconds = timeLimitInSeconds
 var updateIntervalID = null
+var updateTimerIntervalID = null
+const updateTimerFrequencyInUnitsPerMillisecond = 1000
 var browserWindowWidthInPixels = 0
 var browserWindowHeightInPixels = 0
 var aliveMosquito = null
+var gameLevel = null
 
 function gameStart() {
     console.log('Inicializando o jogo')
+    setGameLevelConfigurations()
     defineInicialbrowserWindowSize()
     initializeTimer()
-    updateIntervalID = setInterval(update, mosquitoTimeSpawnInMilliseconds)
+    updateIntervalID = setInterval(updateMosquitoes, mosquitoTimeSpawnInMilliseconds)
+    updateTimerIntervalID = setInterval(updateTimer, updateTimerFrequencyInUnitsPerMillisecond)
     newMosquito()
     console.log('Inicialização completa')
 }
 
-function update() {
+function updateMosquitoes() {
     updateHeartPoints()
-    updateTimer()
     newMosquito()
     verifyGameStatus()
 }
 
 function stop() {
     clearInterval(updateIntervalID)
+    clearInterval(updateTimerIntervalID)
 }
 
 function verifyGameStatus() {
@@ -49,10 +54,39 @@ function verifyGameStatus() {
 
 function updateTimer() {
     const timer = document.getElementById('timer')
-    const mosquitoTimeSpawnInSeconds = mosquitoTimeSpawnInMilliseconds / 1000
-    timeLeftInSeconds -= mosquitoTimeSpawnInSeconds
+    --timeLeftInSeconds
     timer.innerHTML = timeLeftInSeconds
     console.log('Tempo restante atualizado para ' + timeLeftInSeconds + ' segundos')
+    verifyGameStatus()
+}
+
+function setGameLevelConfigurations() {
+   defineGameLevel()
+   defineMosquitoTimeSpawn()
+}
+
+function defineMosquitoTimeSpawn() {
+    console.log('Definindo o tempo de spawn dos mosquitos baseado no nível ' + gameLevel)
+    switch (gameLevel) {
+        case 'normal':
+            mosquitoTimeSpawnInMilliseconds = 1500
+            break;
+        case 'dificil':
+            mosquitoTimeSpawnInMilliseconds = 1000
+            break;
+        case 'extremo':
+            mosquitoTimeSpawnInMilliseconds = 750
+            break;
+    }
+    console.log('Tempo limite definido=' + timeLimitInSeconds)
+}
+
+function defineGameLevel() {
+    console.log('Definindo o nível do jogo...')
+    const querryString = window.location.search
+    const querryStringWithoutQuestionMark = querryString.substr(1)
+    gameLevel = querryStringWithoutQuestionMark
+    console.log('Level definido para ' + gameLevel)
 }
 
 function initializeTimer() {
